@@ -3,8 +3,8 @@ pipeline {
   agent {
     // Use dynamic agent selection based on branch (works for classic and multibranch setups)
     //label "${params.BRANCH_NAME} == 'main' ? 'prod' : 'test'}"
-    //agent { label params.AGENT_LABEL }
-    agent { label 'test' }
+    label params.AGENT_LABEL
+    //agent { label 'test' }
   }
 
   environment {
