@@ -2,7 +2,8 @@ pipeline {
   // handles - test or main branch workflow
   agent {
     // Use dynamic agent selection based on branch (works for classic and multibranch setups)
-    label "${params.BRANCH_NAME} == 'main' ? 'prod' : 'test'}"
+    //label "${params.BRANCH_NAME} == 'main' ? 'prod' : 'test'}"
+    agent { label params.AGENT_LABEL }
   }
 
   environment {
