@@ -11,7 +11,7 @@ pipeline {
     TARGET_PATH = '/home/jenkins/deploy'
     // Set default, can be overridden in environment or block below
     //TARGET_HOST = "${params.BRANCH_NAME} == 'main' ? 'prod-server' : 'test-server'}"
-    TARGET_HOST = (params.BRANCH_NAME == 'main') ? 'prod-server' : 'test-server'
+    //TARGET_HOST = (params.BRANCH_NAME == 'main') ? 'prod-server' : 'test-server'
     REPO_URL    = 'https://github.com/arkb2023/m6-a02-jenkins.git'
   }
 
@@ -23,9 +23,20 @@ pipeline {
   }
 
   stages {
+
+    stage('Set Host') {
+      steps {
+        script {
+          // Set the env variable using Groovy expression:
+          env.TARGET_HOST = (params.BRANCH_NAME == 'main') ? 'prod-server' : 'test-server'
+        }
+      }
+    }
+
     stage('Checkout') {
       steps {
-        echo "Checking out branch: ${params.BRANCH_NAME}"
+        
+        echo "Checking out branch: ${params.BRANCH_NAME}, host is: ${env.TARGET_HOST}"
         git branch: "${params.BRANCH_NAME}", url: "${env.REPO_URL}"
       }
     }
@@ -45,10 +56,10 @@ pipeline {
     stage('Deploy Code') {
       steps {
         script {
-          echo "Deploying branch ${params.BRANCH_NAME}} to ${TARGET_HOST}:${TARGET_PATH}"
+          echo "Deploying branch ${params.BRANCH_NAME}} to ${env.TARGET_HOST}:${TARGET_PATH}"
           sh """
             rsync -avz --no-g --delete -e "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no" \
-              ./ ${TARGET_USER}@${TARGET_HOST}:${TARGET_PATH}/
+              ./ ${TARGET_USER}@${env.TARGET_HOST}:${TARGET_PATH}/
           """
         }
       }
