@@ -2,7 +2,7 @@ pipeline {
   // handles - test or main branch workflow
   agent {
     // Use dynamic agent selection based on branch (works for classic and multibranch setups)
-    label "${env.BRANCH_NAME == 'main' ? 'jenkins-agent-prod' : 'jenkins-agent-test'}"
+    label "${env.BRANCH_NAME == 'main' ? 'prod' : 'test'}"
   }
 
   environment {
