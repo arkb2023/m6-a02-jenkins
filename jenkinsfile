@@ -29,17 +29,17 @@ pipeline {
       }
     }
 
-    stage('Pre-Deploy') {
-      steps {
-        script {
-          echo "Ensuring target path on remote server: ${TARGET_HOST}:${TARGET_PATH}"
-          sh """
-            ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${TARGET_USER}@${TARGET_HOST} \
-              'mkdir -p ${TARGET_PATH} && chown ${TARGET_USER}:${TARGET_USER} ${TARGET_PATH}'
-          """
-        }
-      }
-    }
+    // stage('Pre-Deploy') {
+    //   steps {
+    //     script {
+    //       echo "Ensuring target path on remote server: ${TARGET_HOST}:${TARGET_PATH}"
+    //       sh """
+    //         ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${TARGET_USER}@${TARGET_HOST} \
+    //           'mkdir -p ${TARGET_PATH} && chown ${TARGET_USER}:${TARGET_USER} ${TARGET_PATH}'
+    //       """
+    //     }
+    //   }
+    // }
 
     stage('Deploy Code') {
       steps {
@@ -53,30 +53,31 @@ pipeline {
       }
     }
 
-    // Optionally, add per-env post-deploy/verification steps
-    stage('Post-Deploy Test Check') {
-      when { branch 'test' }
-      steps {
-        echo "Running extra test-server checks (optional)..."
-        // Insert additional test actions if needed
-      }
-    }
+  //   // Optionally, add per-env post-deploy/verification steps
+  //   stage('Post-Deploy Test Check') {
+  //     when { branch 'test' }
+  //     steps {
+  //       echo "Running extra test-server checks (optional)..."
+  //       // Insert additional test actions if needed
+  //     }
+  //   }
 
-    stage('Post-Deploy Prod Check') {
-      when { branch 'main' }
-      steps {
-        echo "Running extra prod-server checks (optional)..."
-        // Insert additional prod actions if needed
-      }
-    }
-  }
+  //   stage('Post-Deploy Prod Check') {
+  //     when { branch 'main' }
+  //     steps {
+  //       echo "Running extra prod-server checks (optional)..."
+  //       // Insert additional prod actions if needed
+  //     }
+  //   }
+  // }
 
-  post {
-    always {
-      echo "Completed deploy pipeline for branch: ${env.BRANCH_NAME}"
-    }
-    cleanup {
-      // Add cleanup steps if needed
-    }
+  // post {
+  //   always {
+  //     echo "Completed deploy pipeline for branch: ${env.BRANCH_NAME}"
+  //   }
+  //   cleanup {
+  //     echo 'Running cleanup...'
+  //     // Add cleanup steps if needed
+  //   }
   }
 }
