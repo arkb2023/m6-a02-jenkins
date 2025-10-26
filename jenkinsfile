@@ -31,6 +31,7 @@ pipeline {
         script {
           // Set the env variable using Groovy expression:
           env.TARGET_HOST = (params.BRANCH_NAME == 'main') ? 'prod-server' : 'test-server'
+          echo "TARGET_HOST ${env.TARGET_HOST}"
         }
       }
     }
@@ -58,7 +59,7 @@ pipeline {
     stage('Deploy Code') {
       steps {
         script {
-          echo "Deploying branch ${params.BRANCH_NAME}} to ${env.TARGET_HOST}:${TARGET_PATH}"
+          echo "Deploying branch ${params.BRANCH_NAME} to ${env.TARGET_HOST}:${TARGET_PATH}"
           sh """
             rsync -avz --no-g --delete -e "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no" \
               ./ ${TARGET_USER}@${env.TARGET_HOST}:${TARGET_PATH}/
